@@ -22,6 +22,8 @@ Idea: just to pick something that "feels" medium size among the data sets after 
 
 ## Setup
 
+Follow these instructions: https://github.com/big-data-europe/docker-spark
+
 ## Execution
 
 ## Analysis
