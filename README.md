@@ -2,7 +2,7 @@
 
 *Christopher Blöcker, Timotheus Kampik, Tobias Sundqvist*
 
-This repository ([https://github.com/TimKam/wasp-cloud-course](https://github.com/TimKam/wasp-cloud-course)) contains documentation and example code for running matrix computations with Apache Spark in the cloud. 
+This repository ([https://github.com/TimKam/wasp-cloud-course](https://github.com/TimKam/wasp-cloud-course)) contains documentation and example code for running matrix computations with Apache Spark in the cloud.
 The content was produced as part of the WASP Software Engineering and Cloud Computing Course 2019.
 
 ## Problem
@@ -25,5 +25,12 @@ The Docker/Spark setup is taken from [this blog post by Marco Villarreal](https:
 
 
 ## Execution
+Build the images with `make`. Then spin up the cluster with `docker-compose up -d`. Spin up a submit container to run something in the cluster with something like
+
+```
+docker run -ti --rm --network=$NETWORK -v <script path>:/scripts spark-submit:2.3.1 /bin/bash
+```
+
+where NETWORK is the docker network to which the containers are connected and `<script path>` is where the "executables" are. Find out the network with `docker network ls`.
 
 ## Analysis
