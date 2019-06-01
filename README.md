@@ -9,12 +9,13 @@ The content was produced as part of the WASP Software Engineering and Cloud Comp
 The problem to solve is scaling *matrix computations* with Apache Spark. Instead of just running them on a local machine, the computations are to be executed across several cloud instances to speed up execution time. To demonstrate the performance advantage of the cloud-based solution, any of the matrices that are available at [https://sparse.tamu.edu/](https://sparse.tamu.edu/) and any of Spark's [linear algebra methods](https://spark.apache.org/docs/2.2.0/api/python/pyspark.ml.html#module-pyspark.ml.linalg) can be picked. However, the choice of data set and methods should allow for a fruitful analysis.
 
 ## Choice of Methods
+To assess the performance of an Apache Spark cluster with different numbers of worker nodes for a linear algebra use case, we chose the following methods:
 
-Idea:
+1. **Principal component analysis**: [pyspark.mllib.linalg.distributed.RowMatrix.computePrincipalComponents](https://spark.apache.org/docs/latest/api/python/pyspark.mllib.html#pyspark.mllib.linalg.distributed.RowMatrix.computePrincipalComponents);
 
-1. squared distance](https://spark.apache.org/docs/2.2.0/api/python/pyspark.ml.html#pyspark.ml.linalg.DenseVector.squared_distance) between all vectors in matrix
+2. **Multiply**: [pyspark.mllib.linalg.distributed.RowMatrix.multiply](https://spark.apache.org/docs/latest/api/python/pyspark.mllib.html#pyspark.mllib.linalg.distributed.RowMatrix.multiply)
 
-2. [dot product](https://spark.apache.org/docs/2.2.0/api/python/pyspark.ml.html#pyspark.ml.linalg.DenseVector.dot) between all vectors in matrix
+We picked the two methods, because we expect them to be commonly used in real-life scenarios.
 
 ## Choice of Data Set
 
@@ -31,6 +32,6 @@ Build the images with `make`. Then spin up the cluster with `docker-compose up -
 docker run -ti --rm --network=$NETWORK -v <script path>:/scripts spark-submit:2.3.1 /bin/bash
 ```
 
-where NETWORK is the docker network to which the containers are connected and `<script path>` is where the "executables" are. Find out the network with `docker network ls`.
+where `NETWORK` is the Docker network to which the containers are connected and `<script path>` is where the *executables* are. Find out the network with `docker network ls`.
 
 ## Analysis
