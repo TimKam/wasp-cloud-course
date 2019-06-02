@@ -11,7 +11,7 @@ The problem to solve is scaling *matrix computations* with Apache Spark. Instead
 ## Choice of Methods
 To assess the performance of an Apache Spark cluster with different numbers of worker nodes for a linear algebra use case, we chose the following methods:
 
-1. **Principal component analysis**: [pyspark.mllib.linalg.distributed.RowMatrix.computePrincipalComponents](https://spark.apache.org/docs/latest/api/python/pyspark.mllib.html#pyspark.mllib.linalg.distributed.RowMatrix.computePrincipalComponents);
+1. **Principal component analysis** (PCA): [pyspark.mllib.linalg.distributed.RowMatrix.computePrincipalComponents](https://spark.apache.org/docs/latest/api/python/pyspark.mllib.html#pyspark.mllib.linalg.distributed.RowMatrix.computePrincipalComponents);
 
 2. **Multiply**: [pyspark.mllib.linalg.distributed.RowMatrix.multiply](https://spark.apache.org/docs/latest/api/python/pyspark.mllib.html#pyspark.mllib.linalg.distributed.RowMatrix.multiply)
 
@@ -35,3 +35,13 @@ docker run -ti --rm --network=$NETWORK -v <script path>:/scripts spark-submit:2.
 where `NETWORK` is the Docker network to which the containers are connected and `<script path>` is where the *executables* are. Find out the network with `docker network ls`.
 
 ## Analysis
+
+We ran both operations on the aforementioned data set on 1, 2, 3, 4, and 5 workers in Google Cloud.
+Below are our results.
+
+|              | 1 Worker | 2 Workers | 3 Workers | 4 Workers | 5 Workers |
+| ------------ | -------- | --------- | --------- | --------- | --------- |
+| **Multiply** |  XXXX ms | XXXX ms   |   XXXX ms |   XXXX ms |   XXXX ms | 
+| **PCA**      |  XXXX ms | XXXX ms   |   XXXX ms |   XXXX ms |   XXXX ms | 
+
+As can be seen, ...
