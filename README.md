@@ -18,12 +18,11 @@ To assess the performance of an Apache Spark cluster with different numbers of w
 We picked the two methods, because we expect them to be commonly used in real-life scenarios.
 
 ## Choice of Data Set
-
-Idea: just to pick something that "feels" medium size among the data sets after sorting them by number non-zero entries: https://sparse.tamu.edu/LPnetlib/lpi_ceria3d
+We selected a medium-sized data set by sorting the available data sets at [https://sparse.tamu.edu/](https://sparse.tamu.edu/) by number of non-zero entries.
+The exact data set we selected is [https://sparse.tamu.edu/PARSEC/Si87H76](https://sparse.tamu.edu/PARSEC/Si87H76).
 
 ## Setup
 The Docker/Spark setup is taken from [this blog post by Marco Villarreal](https://medium.com/@marcovillarreal_40011/creating-a-spark-standalone-cluster-with-docker-and-docker-compose-ba9d743a157f).
-
 
 ## Execution
 Build the images with `make`. Then spin up the cluster with `docker-compose up -d`. Spin up a submit container to run something in the cluster with something like
@@ -33,6 +32,13 @@ docker run -ti --rm --network=$NETWORK -v <script path>:/scripts spark-submit:2.
 ```
 
 where `NETWORK` is the Docker network to which the containers are connected and `<script path>` is where the *executables* are. Find out the network with `docker network ls`.
+
+To run the analysis code, execute:
+
+```
+python analysis.py -u <SparkUrl>,
+```
+with `SparkUrl` being the URL to your Spark master, for example `spark://localhost:7077` if you run a local Spark cluster.
 
 ## Analysis
 

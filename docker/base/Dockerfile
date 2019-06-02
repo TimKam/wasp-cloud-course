@@ -7,6 +7,8 @@ ENV SCALA_VERSION=2.12.4
 ENV SCALA_HOME=/usr/share/scala
 ENV PYSPARK_PYTHON=python3
 
+ADD https://doc-0s-4s-docs.googleusercontent.com/docs/securesc/hcsiqj7232fmq9vhltb8g6cdqat91ssh/lk4p7lr3qdg0i8upg20v8qpfaubq7enh/1559498400000/08136013423218247897/08136013423218247897/1EU5jWdLE0RRsawMSUpmNsqXJccsIIAFm?e=download /usr/local/data/Si87H76_no_head.mtx
+
 RUN apk add --no-cache --virtual=.build-dependencies wget ca-certificates && \
     apk add --no-cache bash curl jq && \
     cd "/tmp" && \

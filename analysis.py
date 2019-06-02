@@ -21,21 +21,31 @@
 # pca: 260.14 sec   and 275.56 sec                                       
 # multiply row Matrix 0.0194 sec and 0.0295 sec
 
+from argparse import ArgumentParser
+import time
+import urllib.request
 
 import findspark
+import pyspark
 from pyspark.mllib.linalg.distributed import  RowMatrix
 from pyspark.mllib.linalg import Matrices
 
-from pyspark import SparkContext
-import time
+from pyspark import SparkConf, SparkContext, SparkFiles
 
-sc = SparkContext()
+parser = ArgumentParser()
+parser.add_argument('-u', "--url", dest="spark_url", help="URL of the Spark master")
+args = parser.parse_args()
+
+conf = SparkConf().setAppName('linalgtest').setMaster(args.spark_url)
+sc = SparkContext(conf=conf)
 
 #use local spark on computer
-findspark.init('/home/sundqtob/spark_install/spark-2.1.0-bin-hadoop2.7')
+# findspark.init()
 #from pyspark.sql import SparkSession
 
-rdd = sc.textFile('data/Si87H76_no_head.mtx')
+local_file_location = 'file:///usr/local/data/Si87H76_no_head.mtx'
+
+rdd = sc.textFile(local_file_location)
 rdd = rdd.map(lambda line: line.split(" "))
 rdd = rdd.map(lambda line: [float(x) for x in line])
 
