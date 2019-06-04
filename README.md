@@ -11,7 +11,7 @@ The problem to solve is scaling *matrix computations* with Apache Spark. Instead
 ## Choice of Methods
 To assess the performance of an Apache Spark cluster with different numbers of worker nodes for a linear algebra use case, we chose the following methods:
 
-1. **Principal component analysis** (PCA): [pyspark.mllib.linalg.distributed.RowMatrix.computePrincipalComponents](https://spark.apache.org/docs/latest/api/python/pyspark.mllib.html#pyspark.mllib.linalg.distributed.RowMatrix.computePrincipalComponents);
+1. **Singular value decomposition** (SVD): [pyspark.mllib.html#pyspark.mllib.linalg.distributed.RowMatrix.computeSVD](https://spark.apache.org/docs/latest/api/python/pyspark.mllib.html#pyspark.mllib.linalg.distributed.RowMatrix.computeSVD);
 
 2. **Multiply**: [pyspark.mllib.linalg.distributed.RowMatrix.multiply](https://spark.apache.org/docs/latest/api/python/pyspark.mllib.html#pyspark.mllib.linalg.distributed.RowMatrix.multiply)
 
@@ -36,18 +36,26 @@ where `NETWORK` is the Docker network to which the containers are connected and 
 To run the analysis code, execute:
 
 ```
-python analysis.py -u <SparkUrl>,
+python analysis.py -u <SparkUrl>
 ```
 with `SparkUrl` being the URL to your Spark master, for example `spark://localhost:7077` if you run a local Spark cluster.
+
+## Resources
+We created a pool with 4 core nodes and gave the spark executors 8 GB memory.
 
 ## Analysis
 
 We ran both operations on the aforementioned data set on 1, 2, 3, 4, and 5 workers in Google Cloud.
-Below are our results.
+Below are our results, averaged over 10 runs each:
 
-|              | 1 Worker | 2 Workers | 3 Workers | 4 Workers | 5 Workers |
-| ------------ | -------- | --------- | --------- | --------- | --------- |
-| **Multiply** |  XXXX ms | XXXX ms   |   XXXX ms |   XXXX ms |   XXXX ms | 
-| **PCA**      |  XXXX ms | XXXX ms   |   XXXX ms |   XXXX ms |   XXXX ms | 
+|              | 1 Worker              | 2 Workers              | 3 Workers              | 4 Workers              |
+| ------------ | --------------------- | ---------------------  | ---------------------  | ---------------------  |
+| **Multiply** |  0.7329313039779664 s | 0.5070641040802002 s   |   0.8104101181030273 s |   1.015389585494995 s  | 
+| **SVD**      |  8.090139007568359 s  | 5.993102312088013 s    |   6.0258043050765995 s |   6.112043023109436 s  | 
 
-As can be seen, ...
+![Multiply](multiply.png)
+
+![SVD](svd.png)
+
+As can be seen, both operations are fastest with 2 workers and loose speed with 3 and 4 workers.
+We tried a third method (principal component analysis [pyspark.mllib.linalg.distributed.RowMatrix.computePrincipalComponents](https://spark.apache.org/docs/latest/api/python/pyspark.mllib.html#pyspark.mllib.linalg.distributed.RowMatrix.computePrincipalComponents)) that would require too much memory when executed on the selected data set. I.e., we assume in most cases, memory is the bottleneck (Von Neumann bottleneck).
