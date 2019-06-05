@@ -33,7 +33,7 @@ We created a pool with 4 core nodes and gave the spark executors 8 GB memory.
 ## Analysis
 
 We ran both operations on the aforementioned data sets on 1, 2, 3, and 4 (and 5 for data set 2) workers in Google Cloud.
-Below are our results, averaged over 10 runs each, for the data set at [https://sparse.tamu.edu/](https://sparse.tamu.edu/):
+Below are our results, averaged over 10 runs each, for the data set at [https://sparse.tamu.edu/PARSEC/Si87H76](https://sparse.tamu.edu/PARSEC/Si87H76):
 
 |              | 1 Worker              | 2 Workers              | 3 Workers              | 4 Workers              |
 | ------------ | --------------------- | ---------------------  | ---------------------  | ---------------------  |
