@@ -25,25 +25,8 @@ The exact data sets we selected are:
 
 * [https://sparse.tamu.edu/DIMACS10/delaunay_n18](https://sparse.tamu.edu/DIMACS10/delaunay_n18).
 
-## Setup
-The Docker/Spark setup is taken from [this blog post by Marco Villarreal](https://medium.com/@marcovillarreal_40011/creating-a-spark-standalone-cluster-with-docker-and-docker-compose-ba9d743a157f).
-
-## Execution
-Build the images with `make`. Then spin up the cluster with `docker-compose up -d`. Spin up a submit container to run something in the cluster with something like
-
-```
-docker run -ti --rm --network=$NETWORK -v <script path>:/scripts spark-submit:2.3.1 /bin/bash
-```
-
-where `NETWORK` is the Docker network to which the containers are connected and `<script path>` is where the *executables* are. Find out the network with `docker network ls`.
-
-To run the analysis code, execute:
-
-```
-python analysis.py -u <SparkUrl>
-```
-with `SparkUrl` being the URL to your Spark master, for example `spark://localhost:7077` if you run a local Spark cluster.
-
+## Setup and Execution
+The Docker setup is based on the [elyra/spark-py](https://hub.docker.com/r/elyra/spark-py) image and executes the analysis code you find at [https://github.com/TimKam/wasp-cloud-course/blob/master/analysis.py](https://github.com/TimKam/wasp-cloud-course/blob/master/analysis.py).
 ## Resources
 We created a pool with 4 core nodes and gave the spark executors 8 GB memory.
 
