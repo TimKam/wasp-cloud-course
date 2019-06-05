@@ -1,78 +1,90 @@
 # WASP cloud software course
-# Tobias Sundqvist, Timotheus, Chris
-# 
+# Tobias Sundqvist, Timotheus Kampik, Christopher Blöcker
+#
 # prerequisite:
 # - java 8 jre:
 # sudo apt install openjdk-8-jre-headless
 # -install spark:
 # mkdir spark_install && cd spark_install
 # wget http://d3kbcqa49mib13.cloudfront.net/spark-2.1.0-bin-hadoop2.7.tgz
-# tar -xzvf spark-2.1.0-bin-hadoop2.7.tgz 
+# tar -xzvf spark-2.1.0-bin-hadoop2.7.tgz
 
 # - pip install numpy
 # - pip install findspark
 # - pip install pyspark
 
-# download data: 
+# download data:
 # Si87H76 : https://sparse.tamu.edu/MM/PARSEC/Si87H76.tar.gz
 # remove the comments in the beginning of the datafile (14 lines) use following command to remove the 14 first lines: (sed -i 1,14d Si87H76.mtx)
 #
 # time to run on virtual box env:
-# pca: 260.14 sec   and 275.56 sec                                       
+# pca: 260.14 sec   and 275.56 sec
 # multiply row Matrix 0.0194 sec and 0.0295 sec
 
 from argparse import ArgumentParser
 import time
-import urllib.request
+#import urllib.request
 
-import findspark
+#import findspark
 import pyspark
-from pyspark.mllib.linalg.distributed import  RowMatrix
+from pyspark.mllib.linalg.distributed import CoordinateMatrix, MatrixEntry
+#from pyspark.mllib.linalg.distributed import RowMatrix
 from pyspark.mllib.linalg import Matrices
 
 from pyspark import SparkConf, SparkContext, SparkFiles
+from pyspark.sql import SparkSession
 
-parser = ArgumentParser()
-parser.add_argument('-u', "--url", dest="spark_url", help="URL of the Spark master")
-args = parser.parse_args()
+#parser = ArgumentParser()
+#parser.add_argument('-u', "--url", dest="spark_url", help="URL of the Spark master")
+#args = parser.parse_args()
 
-conf = SparkConf().setAppName('linalgtest').setMaster(args.spark_url)
-sc = SparkContext(conf=conf)
+spark = SparkSession\
+        .builder\
+        .appName("linalgtest")\
+        .getOrCreate()
+
+#conf = SparkConf().setAppName('linalgtest')
+#sc = SparkContext(conf=conf).getOrCreate()
 
 #use local spark on computer
 # findspark.init()
 #from pyspark.sql import SparkSession
 
-local_file_location = 'file:///usr/local/data/Si87H76_no_head.mtx'
+local_file_location = 'file:///wasp/pdb1HYS.mtx.mtx'
 
-rdd = sc.textFile(local_file_location)
+rdd = spark.sparkContext.textFile(local_file_location)
 rdd = rdd.map(lambda line: line.split(" "))
-rdd = rdd.map(lambda line: [float(x) for x in line])
+rdd = rdd.map(lambda line: MatrixEntry(int(line[0]), int(line[1]), float(line[2])))
 
-row_mat = RowMatrix(rdd.map(tuple))
+mat = CoordinateMatrix(rdd)
+M  = mat.toRowMatrix()
+A  = mat.toBlockMatrix()
+At = mat.transpose().toBlockMatrix()
 
-print("print principalComponents")
-start = time.time()
+print("SVD")
+print(M.numRows(), M.numCols())
+start_svd = time.time()
 
 NUM_TIMES=10
 #do it 10 times to get mean
-for i in range(0, NUM_TIMES):
-    result_principal = row_mat.computePrincipalComponents(2)
+for i in range(NUM_TIMES):
+    svd = M.computeSVD(5, computeU=True)
 
-end = time.time()
-print("Time elapsed: ", (end - start)/NUM_TIMES) # CPU seconds elapsed (floating point)
+end_svd = time.time()
+print("Time elapsed: ", (end_svd - start_svd)/NUM_TIMES) # CPU seconds elapsed (floating point)
 
-print(result_principal)
+print("multiply Matrix")
+start_mul = time.time()
 
-dm = Matrices.dense(3, 1, [4, 5, 6])
+for i in range(NUM_TIMES):
+    AAt = A.multiply(At)
 
-print("multiply row Matrix")
-start = time.time()
-
-for i in range(0, NUM_TIMES):
-    result = row_mat.multiply(dm)
-
-end = time.time()
-print("Time elapsed: ", (end - start)/NUM_TIMES) # CPU seconds elapsed (floating point)
+end_mul = time.time()
+print("Time elapsed: ", (end_mul - start_mul)/NUM_TIMES) # CPU seconds elapsed (floating point)
 
 print("finished using pyspark")
+
+print("SVD: ", (end_svd - start_svd)/NUM_TIMES) # CPU seconds elapsed (floating point)
+print("Mul: ", (end_mul - start_mul)/NUM_TIMES) # CPU seconds elapsed (floating point)
+
+spark.stop()
