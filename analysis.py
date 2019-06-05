@@ -13,14 +13,6 @@
 # - pip install findspark
 # - pip install pyspark
 
-# download data:
-# Si87H76 : https://sparse.tamu.edu/MM/PARSEC/Si87H76.tar.gz
-# remove the comments in the beginning of the datafile (14 lines) use following command to remove the 14 first lines: (sed -i 1,14d Si87H76.mtx)
-#
-# time to run on virtual box env:
-# pca: 260.14 sec   and 275.56 sec
-# multiply row Matrix 0.0194 sec and 0.0295 sec
-
 from argparse import ArgumentParser
 import time
 #import urllib.request
